@@ -1,4 +1,4 @@
-ballin-octo-nemesis
+Three.js
 ===================
 
-Test with Three.js library
+Test with jQuery, backbone, Underscore to create a Three.js scene.
