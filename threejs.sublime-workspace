@@ -8,10 +8,10 @@
 	"buffers":
 	[
 		{
-			"contents": "",
+			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 2445,
 				"line_ending": "Unix"
 			}
 		}
@@ -19,7 +19,7 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 87.0,
+		"height": 392.0,
 		"selected_items":
 		[
 			[
@@ -31,11 +31,11 @@
 				"Indentation: Convert to Tabs"
 			]
 		],
-		"width": 392.0
+		"width": 575.0
 	},
 	"console":
 	{
-		"height": 0.0
+		"height": 125.0
 	},
 	"distraction_free":
 	{
@@ -48,6 +48,8 @@
 	},
 	"file_history":
 	[
+		"/Users/albertoperez/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/desarrollo/repositoriosGitHub/threejs/threejs.sublime-project",
 		"/desarrollo/proyectos/chatNode/gist2031681-8e24cafbf407799dad385cebb6fe22107c04ef0d/var s:Number = 0;"
 	],
 	"find":
@@ -88,26 +90,28 @@
 			[
 				{
 					"buffer": 0,
+					"file": "index.html",
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 2445,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								712,
+								712
 							]
 						],
 						"settings":
 						{
-							"default_dir": "/Users/albertoperez/Library/Application Support/Sublime Text 2/Packages/User",
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -168,9 +172,9 @@
 		"width": 0.0
 	},
 	"show_minimap": true,
-	"show_open_files": false,
+	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 150.0,
 	"status_bar_visible": true
 }
