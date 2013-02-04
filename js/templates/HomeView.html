@@ -15,10 +15,11 @@
 			
 
 		var container;
-		var camera, scene, controls, renderer, objects;
+		var camera, scene, controls, renderer, projector;
 
 		var width = 1024;
 		var height = 768;
+
 
 		//init Scene
         init();
@@ -32,11 +33,11 @@
 				@param scale: 0 - 1
 				@param scene : the scene instance to add the collada object
 				@param x, @param y, @param z : set positions
-
+				@param rotateAngle 
 				@return
 		*/
 
-		function chichaCollada(modelname, scale, scene, x, y ,z) {
+		function chichaCollada(modelname, scale, scene, x, y ,z, rotateAngle) {
 		    var loader = new THREE.ColladaLoader();
 		    var localObject;
 		    loader.options.convertUpAxis = true;
@@ -45,6 +46,11 @@
 		        localObject.position.set(x, y , z);
 		        localObject.scale.x = localObject.scale.y = localObject.scale.z = scale;
 		        localObject.updateMatrix();
+
+		        localObject.rotation.y = rotateAngle;
+
+		        
+		       
 
 		        scene.add(localObject);
 		    } );
@@ -101,10 +107,13 @@
 
 
 			//add collada objects
-			chichaCollada('receptiondesk_1', 0.05,scene, 0, 0, 0);
-			chichaCollada('Tree_Bamboo2', 0.01,scene, 0, 0 , 2);
-			chichaCollada('sofa', 0.02,scene, -6, 0 , -5);
-		
+			chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
+			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , 5, 0);
+			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , 4.5, 0);
+			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , -5.5, 0);
+			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , -6, 0);
+			chichaCollada('sofa', 0.02,scene, -6, 0 , -5, 0);
+			chichaCollada('sofa', 0.02,scene, 1, 0 , 4, Math.PI );
 
 			//add LIGHTS
 
@@ -123,6 +132,9 @@
 			renderer.setSize( width, height );
 
 			container.appendChild( renderer.domElement );
+
+			
+
 
 		}
 
