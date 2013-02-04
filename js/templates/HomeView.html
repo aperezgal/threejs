@@ -70,9 +70,9 @@
 			$('#threeContainer').append( container );
 
 			//create Camera and set positions
-			camera = new THREE.PerspectiveCamera( 90, width / height, 1, 2000 );
-			camera.position.x = -10;
-			camera.position.y = 4;
+			camera = new THREE.PerspectiveCamera( 60, width / height, 1, 2000 );
+			camera.position.x = -15;
+			camera.position.y = 8;
 			camera.position.z = -6;
 
 			//create an Scene
@@ -105,15 +105,50 @@
 			var floor = new THREE.Mesh(floorGeo, material); 
 			scene.add(floor);
 
+			//create roof
+			var roofGeo = new THREE.CubeGeometry(14, 0.01, 15); 
+			var roofMaterial = new THREE.MeshBasicMaterial({color: 0xD0F2EB}); 
+			var roof = new THREE.Mesh(roofGeo, roofMaterial); 
+			roof.position.set( 0, 8, 0 );
+			scene.add(roof);
+
+
+
+			//create bottom wall
+			var wallGeo = new THREE.CubeGeometry(0.01, 8, 15); 
+			var wallMaterial = new THREE.MeshBasicMaterial({color: 0x1DC4A0}); 
+			var wall = new THREE.Mesh(wallGeo, wallMaterial); 
+			wall.position.set( 7, 4, 0 );
+			scene.add(wall);
+
+			//create right wall
+			var wallRightGeo = new THREE.CubeGeometry(0.01, 8, 14); 
+			var wallRightMaterial = new THREE.MeshBasicMaterial({color: 0x0C755E}); 
+			var wallRight = new THREE.Mesh(wallRightGeo, wallRightMaterial); 
+			wallRight.position.set( 0, 4, 7.5 );
+			wallRight.rotation.y = Math.PI / 2;
+			scene.add(wallRight);
+
+			//create left wall
+			var wallLeftGeo = new THREE.CubeGeometry(0.01, 8, 14); 
+			var wallLeftMaterial = new THREE.MeshBasicMaterial({color: 0x0C755E}); 
+			var wallLeft = new THREE.Mesh(wallLeftGeo, wallLeftMaterial); 
+			wallLeft.position.set( 0, 4, -7.5 );
+			wallLeft.rotation.y = Math.PI / 2;
+			scene.add(wallLeft);
+
+
+
 
 			//add collada objects
 			chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
-			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , 5, 0);
-			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , 4.5, 0);
-			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , -5.5, 0);
-			chichaCollada('Tree_Bamboo2', 0.01,scene, 3, 0 , -6, 0);
 			chichaCollada('sofa', 0.02,scene, -6, 0 , -5, 0);
 			chichaCollada('sofa', 0.02,scene, 1, 0 , 4, Math.PI );
+			chichaCollada('tv', 0.04,scene, 7, 3 , 2, Math.PI  );
+			chichaCollada('tv', 0.04,scene, -2, 3 , -7.5, -Math.PI / 2 );
+			chichaCollada('table', 0.02,scene, -4, 0 , 2, 0 );
+			chichaCollada('shelf', 0.04,scene, 4.4, 0 , -10, -Math.PI / 2  );
+
 
 			//add LIGHTS
 
