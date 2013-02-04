@@ -2,6 +2,11 @@
 
 	</div>
 
+	<video id="video" autoplay style="display:none">
+			<source src="assets/video/video1.mp4" type='video/mp4;'>
+	</video>
+
+
 	<style type="text/css">
 		
 			#threeContainer{
@@ -17,6 +22,9 @@
 		var container;
 		var camera, scene, controls, renderer, projector;
 
+
+		var video, image, imageContext, texture;
+
 		var width = 1024;
 		var height = 768;
 
@@ -24,6 +32,8 @@
 		//init Scene
         init();
 		animate();
+
+
 
 
 
@@ -97,6 +107,33 @@
 			// controls.staticMoving = true;
 			// controls.dynamicDampingFactor = 0.3;
 
+
+			//Try to add video to scene
+				video = document.getElementById( 'video' );
+
+
+				image = document.createElement( 'canvas' );
+				image.width = 480;
+				image.height = 204;
+
+				imageContext = image.getContext( '2d' );
+				imageContext.fillStyle = '#000000';
+				imageContext.fillRect( 0, 0, 480, 204 );
+
+				texture = new THREE.Texture( image );
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+
+				var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: true } );
+
+
+
+				var plane = new THREE.PlaneGeometry( 480, 204, 4, 4 );
+
+				mesh = new THREE.Mesh( plane, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.5;
+				scene.add(mesh);
+			//END video
 
 
 			//create floor
@@ -193,6 +230,17 @@
 		*/
 		function render() {
 			camera.lookAt( scene.position );
+
+
+			if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+
+				imageContext.drawImage( video, 0, 0 );
+
+				if ( texture ) texture.needsUpdate = true;
+				if ( textureReflection ) textureReflection.needsUpdate = true;
+
+			}
+
 			renderer.render( scene, camera );
 		}
 		
