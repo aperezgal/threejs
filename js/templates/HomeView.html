@@ -15,7 +15,7 @@
 			
 
 		var container;
-		var camera, scene, renderer, objects;
+		var camera, scene, controls, renderer, objects;
 
 		var width = 1024;
 		var height = 768;
@@ -67,10 +67,30 @@
 			camera = new THREE.PerspectiveCamera( 90, width / height, 1, 2000 );
 			camera.position.x = -10;
 			camera.position.y = 4;
-			camera.position.z = -4;
+			camera.position.z = -6;
 
 			//create an Scene
 			scene = new THREE.Scene();
+
+
+			controls = new THREE.FirstPersonControls(camera); 
+			controls.movementSpeed = 10;			
+			controls.lookVertical = true;
+			controls.noZoom = true;
+			controls.noPan = true;
+			controls.dynamicDampingFactor = 0.3;
+			controls.staticMoving = true;
+
+
+			// controls = new THREE.TrackballControls( camera );
+			// controls.rotateSpeed = 1.0;
+			// controls.zoomSpeed = 1.2;
+			// controls.panSpeed = 0.8;
+			// controls.noZoom = false;
+			// controls.noPan = false;
+			// controls.staticMoving = true;
+			// controls.dynamicDampingFactor = 0.3;
+
 
 
 			//create floor
@@ -114,6 +134,8 @@
 		*/
 		function animate() {
 			requestAnimationFrame( animate );
+			controls.update(60/1000);
+			camera.position.y = 4;
 			render();
 		}
 
