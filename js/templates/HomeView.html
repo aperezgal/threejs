@@ -1,3 +1,142 @@
-<div>
-	Home View
-</div>
+	<div id="threeContainer" style="width:1024px; height:768px; color: 0xff0000">
+
+	</div>
+
+	<script>
+		
+			
+
+		var container;
+
+		var camera, scene, renderer, objects;
+		var particleLight, pointLight;
+
+		var width = 1024;
+		var height = 768;
+
+        init();
+		animate();
+
+		
+
+
+		function chichaCollada(modelname, scale, scene, x, y ,z) {
+		    var loader = new THREE.ColladaLoader();
+		    var localObject;
+		    loader.options.convertUpAxis = true;
+		    loader.load( 'model/'+modelname+'.dae', function colladaReady( collada ) {
+		        localObject = collada.scene;
+		        localObject.position.set(x, y , z);
+		        localObject.scale.x = localObject.scale.y = localObject.scale.z = scale;
+		        localObject.updateMatrix();
+
+		        scene.add(localObject);
+
+		        animate();
+		    } );
+		    
+		}
+
+
+
+
+		function init() {
+			console.log('INIT');
+			container = document.createElement( 'div' );
+			$('#threeContainer').append( container );
+
+			camera = new THREE.PerspectiveCamera( 90, width / height, 1, 2000 );
+			//camera.position.set( 2, 2, 3 );
+			
+
+			scene = new THREE.Scene();
+
+			// Grid
+
+			var size = 14, step = 1;
+
+			var geometry = new THREE.Geometry();
+			var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
+
+			for ( var i = - size; i <= size; i += step ) {
+
+			geometry.vertices.push( new THREE.Vector3( - size, - 0.04, i ) );
+			geometry.vertices.push( new THREE.Vector3( size, - 0.04, i ) );
+
+			geometry.vertices.push( new THREE.Vector3( i, - 0.04, - size ) );
+			geometry.vertices.push( new THREE.Vector3( i, - 0.04, size ) );
+
+
+			// Add the COLLADA
+
+			chichaCollada('receptiondesk_1', 0.05,scene, 0, 0, 0);
+			chichaCollada('Tree_Bamboo2', 0.01,scene, 0, 0 , 2);
+
+		}
+
+		var line = new THREE.Line( geometry, material, THREE.LinePieces );
+		scene.add( line );
+
+		
+
+
+		//particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+		//scene.add( particleLight );
+
+		// Lights
+
+		scene.add( new THREE.AmbientLight( 0xcccccc ) );
+
+		var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xeeeeee );
+		directionalLight.position.x = Math.random() - 0.5;
+		directionalLight.position.y = Math.random() - 0.5;
+		directionalLight.position.z = Math.random() - 0.5;
+		directionalLight.position.normalize();
+		scene.add( directionalLight );
+
+		// pointLight = new THREE.PointLight( 0xffffff, 4 );
+		// pointLight.position = particleLight.position;
+		// scene.add( pointLight );
+
+		renderer = new THREE.WebGLRenderer();
+		renderer.setSize( width, height );
+
+		container.appendChild( renderer.domElement );
+
+
+
+
+		}
+
+
+		var t = 0;
+		var clock = new THREE.Clock();
+
+		function animate() {
+
+			requestAnimationFrame( animate );
+
+
+			render();
+			
+
+		}
+
+		function render() {
+
+			var timer = Date.now() * 0.0005;
+
+			camera.position.x = -10;
+			camera.position.y = 4;
+			camera.position.z = -4;
+
+			camera.lookAt( scene.position );
+
+			
+
+			renderer.render( scene, camera );
+
+		}
+		
+	
+	</script>

@@ -4,7 +4,7 @@
     },
     render:function () {
     	console.log('render ThreeView View');
-       /
+       
           // Compile the template using underscore
         var template = _.template( tpl.get('ThreeView'), {} );
         
