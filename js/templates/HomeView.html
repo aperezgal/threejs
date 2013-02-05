@@ -93,6 +93,22 @@
 			scene.add(mesh);
 		}
 
+
+		function addImageToScene(path, scene, scale, x, y, z, rotate, width, heigh) {
+			
+			//add images to scene
+			var img = new THREE.MeshLambertMaterial( {map:THREE.ImageUtils.loadTexture(path)} );
+        	img.map.needsUpdate = true; //ADDED
+        	// plane
+	        var plane = new THREE.Mesh(new THREE.PlaneGeometry(width, heigh),img);
+	        plane.overdraw = true;
+	        plane.scale.x = plane.scale.y = plane.scale.z = scale;
+			plane.position.set( x, y, z );
+			plane.rotation.y = rotate;
+	        scene.add(plane);
+
+		}
+
 		/*
 			Init Scene
 				
@@ -107,13 +123,13 @@
 			camera = new THREE.PerspectiveCamera( 60, width / height, 1, 2000 );
 			camera.position.x = -15;
 			camera.position.y = 8;
-			camera.position.z = -6;
+			camera.position.z = -3.5;
 
 			//create an Scene
 			scene = new THREE.Scene();
 
 
-			controls = new THREE.FirstPersonControls(camera); 
+			controls = new THREE.CustomKeyboardControls(camera); 
 			controls.movementSpeed = 10;			
 			controls.lookVertical = true;
 			controls.noZoom = true;
@@ -159,15 +175,17 @@
 			addVideoToScene(video2, texture2, image2, 0.051, scene, 6.9, 4.7, 4.5, -Math.PI / 2, 90, 50);
 
 
+			//add image to scene
+			addImageToScene('assets/img/banner1.jpg', scene, 0.051, 0, 4, 7.4, Math.PI, 100, 100);
 
 			//create floor
-			var floorGeo = new THREE.CubeGeometry(14, 0.01, 15); 
+			var floorGeo = new THREE.CubeGeometry(30, 0.01, 15); 
 			var material = new THREE.MeshBasicMaterial({color: 0x666666}); 
 			var floor = new THREE.Mesh(floorGeo, material); 
 			scene.add(floor);
 
 			//create roof
-			var roofGeo = new THREE.CubeGeometry(14, 0.01, 15); 
+			var roofGeo = new THREE.CubeGeometry(25, 0.01, 15); 
 			var roofMaterial = new THREE.MeshBasicMaterial({color: 0xD0F2EB}); 
 			var roof = new THREE.Mesh(roofGeo, roofMaterial); 
 			roof.position.set( 0, 8, 0 );
@@ -183,7 +201,7 @@
 			scene.add(wall);
 
 			//create right wall
-			var wallRightGeo = new THREE.CubeGeometry(0.01, 8, 14); 
+			var wallRightGeo = new THREE.CubeGeometry(0.01, 8, 25); 
 			var wallRightMaterial = new THREE.MeshBasicMaterial({color: 0x0C755E}); 
 			var wallRight = new THREE.Mesh(wallRightGeo, wallRightMaterial); 
 			wallRight.position.set( 0, 4, 7.5 );
@@ -191,7 +209,7 @@
 			scene.add(wallRight);
 
 			//create left wall
-			var wallLeftGeo = new THREE.CubeGeometry(0.01, 8, 14); 
+			var wallLeftGeo = new THREE.CubeGeometry(0.01, 8, 25); 
 			var wallLeftMaterial = new THREE.MeshBasicMaterial({color: 0x0C755E}); 
 			var wallLeft = new THREE.Mesh(wallLeftGeo, wallLeftMaterial); 
 			wallLeft.position.set( 0, 4, -7.5 );
@@ -202,7 +220,7 @@
 
 
 			//add collada objects
-			//chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
+			chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
 			chichaCollada('sofa', 0.02,scene, -6, 0 , -5, 0);
 			chichaCollada('sofa', 0.02,scene, 1, 0 , 4, Math.PI );
 			chichaCollada('tv', 0.04,scene, 7, 3 , 2, Math.PI  );
@@ -242,7 +260,29 @@
 		function animate() {
 			requestAnimationFrame( animate );
 			controls.update(60/1000);
-			camera.position.y = 4;
+
+			if (camera.position.y < 5.5){
+				camera.position.y = 5.5;
+			}
+			if (camera.position.y > 6.5){
+				camera.position.y = 6.5;
+			}
+
+			if (camera.position.x < -17){
+				camera.position.x = -17;
+			}
+			if (camera.position.x > -15){
+				camera.position.x = -15;
+			}
+
+			if (camera.position.z < -3.5){
+				camera.position.z = -3.5;
+			}
+			if (camera.position.z > 3.5){
+				camera.position.z = 3.5;
+			}
+
+			console.log (camera.position.y);
 			render();
 		}
 
@@ -253,6 +293,7 @@
 		*/
 		function render() {
 			camera.lookAt( scene.position );
+
 
 
 			if ( video1.readyState === video1.HAVE_ENOUGH_DATA ) {
