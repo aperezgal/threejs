@@ -177,32 +177,54 @@
 
 			//add image to scene
 			addImageToScene('assets/img/banner1.jpg', scene, 0.051, 0, 4, 7.4, Math.PI, 100, 100);
+			addImageToScene('assets/img/logo.jpg', scene, 0.035, 6.9, 4.7, -2.5, -Math.PI / 2, 115, 50);
 
 			//create floor
-			var floorGeo = new THREE.CubeGeometry(30, 0.01, 15); 
-			var material = new THREE.MeshBasicMaterial({color: 0x666666}); 
-			var floor = new THREE.Mesh(floorGeo, material); 
+			
+			var imgTextureFloor = THREE.ImageUtils.loadTexture( "model/textures/floor.png" );
+			imgTextureFloor.wrapS = imgTextureFloor.wrapT = THREE.RepeatWrapping;
+			imgTextureFloor.repeat.set( 1, 1 );	
+			imgTextureFloor.anisotropy = 2;
+
+		    var floorGeo = new THREE.CubeGeometry(30, 0.01, 15); 
+			var material = new THREE.MeshLambertMaterial( { map: imgTextureFloor } );
+
+			var floor = new THREE.Mesh(floorGeo, material ); 
 			scene.add(floor);
 
 			//create roof
+
+			var imgTextureRoof = THREE.ImageUtils.loadTexture( "model/textures/softGreyWall.png" );
+			imgTextureRoof.wrapS = imgTextureRoof.wrapT = THREE.RepeatWrapping;
+			imgTextureRoof.repeat.set( 1, 1 );	
+			imgTextureRoof.anisotropy = 2;
+
 			var roofGeo = new THREE.CubeGeometry(25, 0.01, 15); 
-			var roofMaterial = new THREE.MeshBasicMaterial({color: 0xD0F2EB}); 
+			var roofMaterial = new THREE.MeshLambertMaterial( { map: imgTextureRoof } );
 			var roof = new THREE.Mesh(roofGeo, roofMaterial); 
 			roof.position.set( 0, 8, 0 );
 			scene.add(roof);
 
 
 
+			var imgTextureWall = THREE.ImageUtils.loadTexture( "model/textures/greyWall.png" );
+			imgTextureWall.wrapS = imgTextureWall.wrapT = THREE.RepeatWrapping;
+			imgTextureWall.repeat.set( 1, 1 );	
+			imgTextureWall.anisotropy = 2;
+
 			//create bottom wall
+
 			var wallGeo = new THREE.CubeGeometry(0.01, 8, 15); 
-			var wallMaterial = new THREE.MeshBasicMaterial({color: 0x1DC4A0}); 
+			var wallMaterial = new THREE.MeshLambertMaterial( { map: imgTextureWall } );
 			var wall = new THREE.Mesh(wallGeo, wallMaterial); 
 			wall.position.set( 7, 4, 0 );
 			scene.add(wall);
 
+
+
 			//create right wall
 			var wallRightGeo = new THREE.CubeGeometry(0.01, 8, 25); 
-			var wallRightMaterial = new THREE.MeshBasicMaterial({color: 0x0C755E}); 
+			var wallRightMaterial = new THREE.MeshLambertMaterial( { map: imgTextureWall } );
 			var wallRight = new THREE.Mesh(wallRightGeo, wallRightMaterial); 
 			wallRight.position.set( 0, 4, 7.5 );
 			wallRight.rotation.y = Math.PI / 2;
@@ -210,7 +232,7 @@
 
 			//create left wall
 			var wallLeftGeo = new THREE.CubeGeometry(0.01, 8, 25); 
-			var wallLeftMaterial = new THREE.MeshBasicMaterial({color: 0x0C755E}); 
+			var wallLeftMaterial = new THREE.MeshLambertMaterial( { map: imgTextureWall } );
 			var wallLeft = new THREE.Mesh(wallLeftGeo, wallLeftMaterial); 
 			wallLeft.position.set( 0, 4, -7.5 );
 			wallLeft.rotation.y = Math.PI / 2;
@@ -220,13 +242,14 @@
 
 
 			//add collada objects
-			chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
-			chichaCollada('sofa', 0.02,scene, -6, 0 , -5, 0);
-			chichaCollada('sofa', 0.02,scene, 1, 0 , 4, Math.PI );
+			chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, -2.3, - Math.PI / 2);
+			chichaCollada('sofa', 0.025,scene, -7.4, 0 , -4, 0);
+			chichaCollada('sofa', 0.025,scene, 1, 0 , 4, Math.PI );
 			chichaCollada('tv', 0.04,scene, 7, 3 , 2, Math.PI  );
 			chichaCollada('tv', 0.04,scene, -2, 3 , -7.5, -Math.PI / 2 );
 			chichaCollada('table', 0.02,scene, -4, 0 , 2, 0 );
 			chichaCollada('shelf', 0.04,scene, 4.4, 0 , -10, -Math.PI / 2  );
+
 
 
 			//add LIGHTS
@@ -237,7 +260,7 @@
 			directionalLight.position.y = Math.random() - 0.5;
 			directionalLight.position.z = Math.random() - 0.5;
 			directionalLight.position.normalize();
-			scene.add( directionalLight );
+			//scene.add( directionalLight );
 
 
 			//Render Scene
@@ -282,7 +305,6 @@
 				camera.position.z = 3.5;
 			}
 
-			console.log (camera.position.y);
 			render();
 		}
 
