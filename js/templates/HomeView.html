@@ -2,10 +2,12 @@
 
 	</div>
 
-	<video id="video" autoplay style="display:none">
-			<source src="assets/video/video1.mp4" type='video/mp4;'>
+	<video id="video1" poster="img/grass.jpg" autoplay loop muted style="display:none;" width="90" height="50">
+			<source src="assets/video/video1.mp4" type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' >
 	</video>
-
+	<video id="video2" poster="img/grass.jpg" autoplay loop style="display:none" width="90" height="50">
+			<source src="assets/video/video2.mp4" type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' >
+	</video>
 
 	<style type="text/css">
 		
@@ -23,7 +25,8 @@
 		var camera, scene, controls, renderer, projector;
 
 
-		var video, image, imageContext, texture;
+		var video1, texture1, imageContext1;
+		var video2, texture2, imageContext2;
 
 		var width = 1024;
 		var height = 768;
@@ -32,10 +35,6 @@
 		//init Scene
         init();
 		animate();
-
-
-
-
 
 		/*
 			Load collada (dae) objects to Scene
@@ -68,6 +67,31 @@
 		}
 
 
+		/*
+			Add video to an Scene
+				@param video : name of file without .dae extension
+				@param texture: 0 - 1
+				@param image
+				@param scale
+				@param scene : the scene instance to add the collada object
+				@param x, @param y, @param z : set positions
+				@param rotate 
+				@param width, height 
+				@return
+		*/
+		function addVideoToScene(video, texture, image, scale, scene, x, y, z, rotate, width, heigh) {
+			
+
+			var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: true } );
+
+			var plane = new THREE.PlaneGeometry( width, heigh, 4, 4 );
+
+			mesh = new THREE.Mesh( plane, material );
+			mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+			mesh.position.set( x, y, z );
+			mesh.rotation.y = rotate;
+			scene.add(mesh);
+		}
 
 		/*
 			Init Scene
@@ -98,42 +122,42 @@
 			controls.staticMoving = true;
 
 
-			// controls = new THREE.TrackballControls( camera );
-			// controls.rotateSpeed = 1.0;
-			// controls.zoomSpeed = 1.2;
-			// controls.panSpeed = 0.8;
-			// controls.noZoom = false;
-			// controls.noPan = false;
-			// controls.staticMoving = true;
-			// controls.dynamicDampingFactor = 0.3;
+
+			//Load First Video
+			video1 = document.getElementById( 'video1' );
+
+			var image1 = document.createElement( 'canvas' );
+			image1.width = 90;
+			image1.height = 50;
+
+			imageContext1 = image1.getContext( '2d' );
+			imageContext1.fillStyle = '#000000';
+			imageContext1.fillRect( 0, 0, 90, 50 );
+
+			texture1 = new THREE.Texture( image1 );
+			texture1.minFilter = THREE.LinearFilter;
+			texture1.magFilter = THREE.LinearFilter;
+
+			addVideoToScene(video1, texture1, image1, 0.051, scene, 0.55, 4.7, -7.35, 0, 90, 50);
 
 
-			//Try to add video to scene
-				video = document.getElementById( 'video' );
+			//Load Second Video
+			video2 = document.getElementById( 'video2' );
+			
+			var image2 = document.createElement( 'canvas' );
+			image2.width = 90;
+			image2.height = 50;
 
+			imageContext2 = image2.getContext( '2d' );
+			imageContext2.fillStyle = '#000000';
+			imageContext2.fillRect( 0, 0, 90, 50 )
 
-				image = document.createElement( 'canvas' );
-				image.width = 480;
-				image.height = 204;
+			texture2 = new THREE.Texture( image2 );
+			texture2.minFilter = THREE.LinearFilter;
+			texture2.magFilter = THREE.LinearFilter;
 
-				imageContext = image.getContext( '2d' );
-				imageContext.fillStyle = '#000000';
-				imageContext.fillRect( 0, 0, 480, 204 );
+			addVideoToScene(video2, texture2, image2, 0.051, scene, 6.9, 4.7, 4.5, -Math.PI / 2, 90, 50);
 
-				texture = new THREE.Texture( image );
-				texture.minFilter = THREE.LinearFilter;
-				texture.magFilter = THREE.LinearFilter;
-
-				var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: true } );
-
-
-
-				var plane = new THREE.PlaneGeometry( 480, 204, 4, 4 );
-
-				mesh = new THREE.Mesh( plane, material );
-				mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.5;
-				scene.add(mesh);
-			//END video
 
 
 			//create floor
@@ -178,7 +202,7 @@
 
 
 			//add collada objects
-			chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
+			//chichaCollada('receptiondesk_1', 0.05,scene, 2.5, 0, 3.8, Math.PI / 8);
 			chichaCollada('sofa', 0.02,scene, -6, 0 , -5, 0);
 			chichaCollada('sofa', 0.02,scene, 1, 0 , 4, Math.PI );
 			chichaCollada('tv', 0.04,scene, 7, 3 , 2, Math.PI  );
@@ -188,7 +212,6 @@
 
 
 			//add LIGHTS
-
 			scene.add( new THREE.AmbientLight( 0xcccccc ) );
 
 			var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xeeeeee );
@@ -232,14 +255,17 @@
 			camera.lookAt( scene.position );
 
 
-			if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
-
-				imageContext.drawImage( video, 0, 0 );
-
-				if ( texture ) texture.needsUpdate = true;
-				if ( textureReflection ) textureReflection.needsUpdate = true;
+			if ( video1.readyState === video1.HAVE_ENOUGH_DATA ) {
+				imageContext1.drawImage( video1, 0, 0 );
+				if ( texture1 ) texture1.needsUpdate = true;
 
 			}
+
+			if ( video2.readyState === video2.HAVE_ENOUGH_DATA ) {
+				imageContext2.drawImage( video2, 0, 0 );
+				if ( texture2 ) texture2.needsUpdate = true;
+			}
+
 
 			renderer.render( scene, camera );
 		}
