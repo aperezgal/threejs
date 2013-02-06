@@ -28,6 +28,9 @@
 		var video1, texture1, imageContext1;
 		var video2, texture2, imageContext2;
 
+		var projector;
+		var objects = [];
+
 		var width = 1024;
 		var height = 768;
 
@@ -52,16 +55,20 @@
 		    loader.options.convertUpAxis = true;
 		    loader.load( 'model/'+modelname+'.dae', function colladaReady( collada ) {
 		        localObject = collada.scene;
+
+		        //var localObject = THREE.SceneUtils.cloneObject(object);
+
+		        localObject.name = modelname;
+
 		        localObject.position.set(x, y , z);
 		        localObject.scale.x = localObject.scale.y = localObject.scale.z = scale;
 		        localObject.updateMatrix();
 
 		        localObject.rotation.y = rotateAngle;
 
-		        
-		       
-
 		        scene.add(localObject);
+
+		        objects.push(localObject);
 		    } );
 		    
 		}
@@ -141,12 +148,67 @@
 		}
 
 
+
+		function onDocumentMouseDown(event){
+			console.log('mouseDown');
+
+			event.preventDefault();
+
+
+			var vector = new THREE.Vector3( ( event.clientX / width ) * 2 - 1, - ( event.clientY / height ) * 2 + 1, 0.5 );
+		    projector.unprojectVector( vector, camera );
+
+
+		    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+
+		    if (objects && ray){
+		    	//console.log(objects);
+		   		var intersects = ray.intersectObjects( scene.children );
+
+			    if (intersects && intersects.length > 0 ) {
+			            
+			            //  adapted from Roshan Bhattarai's code 
+			            //  Visit http://roshanbh.com.np for this script and more.
+			            //  This notice MUST stay intact for legal use
+			            $(document).bind('click.info', function(e){
+			                
+			                //con esto podemos conseguir, sobre paredes, techos, vídeos o imágenes
+			                //el resultante, para crearles un efecto de marcado
+			               
+							console.log("intersects.length: "+ intersects.length);
+					        console.log("intersects.distance: "+ intersects[0].distance);
+					        console.log("intersects.face: "+ intersects[0].face);
+					        console.log("intersects.point: " + intersects[0].point);
+					        console.log(intersects[0].object);
+
+
+					        if (intersects[0].object.id == 5 || intersects[0].object.id == 6){
+					        	intersects[0].object.scale.x = intersects[0].object.scale.y = intersects[0].object.scale.z = intersects[0].object.scale.x * 1.1;
+					        }	
+
+
+	
+
+			                $(document).unbind('click.info');
+			              
+			            });
+			    }else{
+			    	console.log ('intersect es vacio');
+			    }
+			}else{
+				conole.log('objects es vacio');
+			}
+			    
+		}
 		/*
 			Init Scene
 				
 				@return
 		*/
 		function init() {
+
+			document.addEventListener("mousedown", onDocumentMouseDown);
 
 			container = document.createElement( 'div' );
 			$('#threeContainer').append( container );
@@ -169,6 +231,8 @@
 			controls.dynamicDampingFactor = 0.3;
 			controls.staticMoving = true;
 
+			//create projector element
+			projector = new THREE.Projector();
 
 
 			//Load First Video
