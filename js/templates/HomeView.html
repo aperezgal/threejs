@@ -34,6 +34,7 @@
 		var width = 1024;
 		var height = 768;
 
+		var moveCamera = false;
 
 		//init Scene
         init();
@@ -135,15 +136,20 @@
 				@param width, height 
 				@return
 		*/
-		function addInteractionToScene(scene, scale, x, y, z, width, heigh) {
+		function addInteractionToScene(scene, x, y, z,width, heigh, rotate) {
 			
-			var sphere = new THREE.Mesh(new THREE.SphereGeometry(200, 50, 50), new THREE.MeshLambertMaterial({
-	            color: 0x0000ff
-	        }));
-	        sphere.overdraw = true;
-	        //sphere.scale.x = sphere.scale.y = sphere.scale.z = scale;
-			//sphere.position.set( x, y, z );
-	        scene.add(sphere);
+			
+			var img = new THREE.MeshLambertMaterial( {map:THREE.ImageUtils.loadTexture("assets/img/banner1.jpg")} );
+        	img.map.needsUpdate = true; //ADDED
+        	// plane
+	        var plane = new THREE.Mesh(new THREE.PlaneGeometry(width, heigh),img);
+	        plane.overdraw = true;
+	        plane.scale.x = plane.scale.y = plane.scale.z = 0.03;
+			plane.position.set( x, y, z );
+			plane.rotation.y = rotate; 
+	        scene.add(plane);
+
+	
 
 		}
 
@@ -152,7 +158,7 @@
 		function onDocumentMouseDown(event){
 			console.log('mouseDown');
 
-			event.preventDefault();
+			//event.preventDefault();
 
 
 			var vector = new THREE.Vector3( ( event.clientX / width ) * 2 - 1, - ( event.clientY / height ) * 2 + 1, 0.5 );
@@ -187,7 +193,13 @@
 					        	intersects[0].object.scale.x = intersects[0].object.scale.y = intersects[0].object.scale.z = intersects[0].object.scale.x * 1.1;
 					        }	
 
-
+					        if (intersects[0].object.id == 7){
+					        	console.log ('MOVEMOS LA CAMARA');
+					        	moveCamera = true;
+					        	controls.moveForward = true;
+					        	controls.mouseDragOn = true;
+					        	controls.moveLeft = true;
+					        }	
 	
 
 			                $(document).unbind('click.info');
@@ -201,6 +213,15 @@
 			}
 			    
 		}
+
+
+		function transitionIn(event){
+			console.log('CLICK IN');
+		}
+		function transitionOut(event){
+			console.log('CLICK OUT');
+		}
+
 		/*
 			Init Scene
 				
@@ -210,11 +231,14 @@
 
 			document.addEventListener("mousedown", onDocumentMouseDown);
 
+
 			container = document.createElement( 'div' );
 			$('#threeContainer').append( container );
 
 			//create Camera and set positions
-			camera = new THREE.PerspectiveCamera( 60, width / height, 1, 2000 );
+			camera = new THREE.PerspectiveCamera( 55, width / height, 0.5, 200 );
+			
+
 			camera.position.x = -15;
 			camera.position.y = 8;
 			camera.position.z = -3.5;
@@ -230,6 +254,7 @@
 			controls.noPan = true;
 			controls.dynamicDampingFactor = 0.3;
 			controls.staticMoving = true;
+
 
 			//create projector element
 			projector = new THREE.Projector();
@@ -277,7 +302,8 @@
 
 			
 			//add Interactions
-			addInteractionToScene(scene, 1, 0,0,0,200, 100);
+			addInteractionToScene(scene, -4.5, 4, 7.4, 100, 80, Math.PI);
+			//addInteractionToScene(scene, 1, 4.5,-3, 40, 27, -Math.PI/4);
 
 			//create floor
 			
@@ -307,7 +333,7 @@
 
 
 
-			var imgTextureWall = THREE.ImageUtils.loadTexture( "model/textures/greyWall.png" );
+			var imgTextureWall = THREE.ImageUtils.loadTexture( "model/textures/wall.png" );
 			imgTextureWall.wrapS = imgTextureWall.wrapT = THREE.RepeatWrapping;
 			imgTextureWall.repeat.set( 1, 1 );	
 			imgTextureWall.anisotropy = 2;
@@ -355,12 +381,31 @@
 			//add LIGHTS
 			scene.add( new THREE.AmbientLight( 0xcccccc ) );
 
-			var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xeeeeee );
-			directionalLight.position.x = Math.random() - 0.5;
-			directionalLight.position.y = Math.random() - 0.5;
-			directionalLight.position.z = Math.random() - 0.5;
+			var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xffffff );
+			directionalLight.position.x = 0;
+			directionalLight.position.y = 7.9;
+			directionalLight.position.z = 0;
+			directionalLight.intensity = 0.3
 			directionalLight.position.normalize();
-			//scene.add( directionalLight );
+			scene.add( directionalLight );
+
+			var light = new THREE.PointLight( 0xffffff, 0.7, 100 );
+			light.position.set( 0, 7.9, 0 );
+			scene.add( light );
+
+
+			var spotLight = new THREE.SpotLight( 0xff0000 ); 
+			spotLight.position.set( -2, 7.9, -9 );  
+			spotLight.castShadow = true;  
+			spotLight.shadowMapWidth = 1024; 
+			spotLight.shadowMapHeight = 1024;  
+			spotLight.shadowCameraNear = 500; 
+			spotLight.shadowCameraFar = 4000; 
+			spotLight.shadowCameraFov = 30;  
+			spotLight.angle = -Math.PI/4; 
+			scene.add( spotLight );
+
+			//END LIGHTS
 
 
 			//Render Scene
@@ -384,26 +429,54 @@
 			requestAnimationFrame( animate );
 			controls.update(60/1000);
 
-			if (camera.position.y < 5.5){
-				camera.position.y = 5.5;
-			}
-			if (camera.position.y > 6.5){
-				camera.position.y = 6.5;
-			}
+			if (!moveCamera){
+				if (camera.position.y < 5.5){
+					camera.position.y = 5.5;
+				}
+				if (camera.position.y > 6.5){
+					camera.position.y = 6.5;
+				}
 
-			if (camera.position.x < -17){
-				camera.position.x = -17;
-			}
-			if (camera.position.x > -15){
-				camera.position.x = -15;
-			}
+				if (camera.position.x < -17){
+					camera.position.x = -17;
+				}
+				if (camera.position.x > -15){
+					camera.position.x = -15;
+				}
 
-			if (camera.position.z < -3.5){
-				camera.position.z = -3.5;
+				if (camera.position.z < -3.5){
+					camera.position.z = -3.5;
+				}
+				if (camera.position.z > 3.5){
+					camera.position.z = 3.5;
+				}
+			}else{
+			//	var timer = new Date().getTime() * 0.0005;
+
+			//	camera.position.z = Math.floor(Math.sin( timer ) * 7);
+			//	camera.position.x = Math.floor(Math.cos( timer ) * 3);
+				if (camera.position.y < 5.5){
+					camera.position.y = 5.5;
+				}
+				if (camera.position.z <  -7.5){
+					camera.position.z = -7.5;
+				}
+				if (camera.position.x >  -5){
+					camera.position.x = -5;
+
+					//moveCamera = false;
+					controls.mouseDragOn = false;
+					controls.moveForward = false;
+					controls.moveLeft = false;
+				}
+
+				//camera.position.x = -16;
+
+				console.log ('cameraX ' + camera.position.x);
+				console.log ('cameraY ' + camera.position.y);
+				console.log ('cameraZ ' + camera.position.z);
 			}
-			if (camera.position.z > 3.5){
-				camera.position.z = 3.5;
-			}
+			
 
 			render();
 		}
